@@ -1,15 +1,16 @@
 const express = require("express");
+const {
+    getPages,
+    getSinglePage,
+    deleteSinglePage
+} = require("../controllers/pages");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    res.status(200).json({ success: true, msg: "Show all pages" });
-});
+router.route("/").get(getPages);
 
-router.get("/:id", (req, res) => {
-    res.status(200).json({
-        success: true,
-        msg: `Show specific page ${req.params.id}`
-    });
-});
+router
+    .route("/:id")
+    .get(getSinglePage)
+    .delete(deleteSinglePage);
 
 module.exports = router;
