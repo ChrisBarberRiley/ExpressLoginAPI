@@ -2,7 +2,10 @@
 // @route       GET /api/v1/pages
 // @access      Public
 exports.getPages = (req, res, next) => {
-    res.status(200).json({ success: true, msg: "Show all pages" });
+    res.status(200).json({
+        success: true,
+        msg: "Show all pages"
+    });
 };
 
 // @desc        Get specific page
