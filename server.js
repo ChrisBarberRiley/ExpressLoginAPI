@@ -15,6 +15,9 @@ const pages = require("./routes/pages");
 
 const app = express();
 
+// Body parser
+app.use(express.json());
+
 // Dev logging
 if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
