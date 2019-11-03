@@ -1,5 +1,5 @@
 const Pages = require("../models/Pages");
-
+const ErrorResponse = require("../utils/errorResponse");
 // @desc        Get all pages
 // @route       GET /api/v1/pages
 // @access      Public
@@ -13,10 +13,7 @@ exports.getPages = async (req, res, next) => {
             data
         });
     } catch (err) {
-        res.status(400).json({
-            success: false,
-            msg: err
-        });
+        next(err);
     }
 };
 
@@ -28,7 +25,12 @@ exports.getSinglePage = async (req, res, next) => {
         const data = await Pages.findById(req.params.id);
 
         if (!data) {
-            return res.status(400).json({ success: false });
+            return next(
+                new ErrorResponse(
+                    `Page with id (${req.params.id}) not found`,
+                    404
+                )
+            );
         }
 
         res.status(200).json({
@@ -37,10 +39,7 @@ exports.getSinglePage = async (req, res, next) => {
             data
         });
     } catch (err) {
-        res.status(400).json({
-            success: false,
-            msg: `Failed to get page ${req.params.id} - ${err}`
-        });
+        next(err);
     }
 };
 
@@ -56,10 +55,7 @@ exports.createSinglePage = async (req, res, next) => {
             data: page
         });
     } catch (err) {
-        res.status(400).json({
-            success: false,
-            msg: `Failed to submit`
-        });
+        next(err);
     }
 };
 
