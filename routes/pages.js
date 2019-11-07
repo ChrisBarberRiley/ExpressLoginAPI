@@ -1,4 +1,7 @@
 const express = require("express");
+
+const { protect } = require("../middleware/auth");
+
 const {
     getPages,
     getSinglePage,
@@ -10,11 +13,11 @@ const router = express.Router();
 router
     .route("/")
     .get(getPages)
-    .post(createSinglePage);
+    .post(protect, createSinglePage);
 
 router
     .route("/:id")
     .get(getSinglePage)
-    .delete(deleteSinglePage);
+    .delete(protect, deleteSinglePage);
 
 module.exports = router;
