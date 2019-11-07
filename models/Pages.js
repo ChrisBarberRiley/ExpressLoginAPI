@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const PagesSchema = new mongoose.Schema({
     name: {
@@ -18,6 +19,13 @@ const PagesSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+});
+
+// Create Page slug from name
+PagesSchema.pre("save", function() {
+    console.log("Slugify ran" + this.name);
+    this.slug = slugify(this.name, { lower: true });
+    next();
 });
 
 module.exports = mongoose.model("Pages", PagesSchema);
