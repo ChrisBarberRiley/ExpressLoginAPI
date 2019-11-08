@@ -15,6 +15,7 @@ connectDB();
 // Require routes
 const pages = require("./routes/pages");
 const authentication = require("./routes/auth");
+const articles = require("./routes/articles");
 
 const app = express();
 
@@ -32,6 +33,7 @@ if (process.env.NODE_ENV === "development") {
 // Mount routers
 app.use("/api/v1/pages", pages);
 app.use("/api/v1/auth", authentication);
+app.use("/api/v1/articles", articles);
 
 // Custom error handling
 app.use(errorHandler);
