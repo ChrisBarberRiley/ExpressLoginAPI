@@ -6,7 +6,44 @@ const ErrorResponse = require("../utils/errorResponse");
 // @route       GET /api/v1/pages
 // @access      Public
 exports.getPages = asyncHandler(async (req, res, next) => {
-    const data = await Pages.find();
+    let query;
+
+    const reqQuery = { ...req.query };
+
+    const removeFields = ["select", "sort", "page", "limit"];
+
+    removeFields.forEach(param => delete reqQuery[param]);
+
+    console.log(reqQuery);
+
+    let queryStr = JSON.stringify(reqQuery);
+
+    queryStr = queryStr.replace(
+        /\b(gte|gt|lte|lt|in)\b/g,
+        match => `$${match}`
+    );
+
+    query = Pages.find(JSON.parse(queryStr));
+
+    if (req.query.select) {
+        const fields = req.query.select.split(",").join(" ");
+        query = query.select(fields);
+    }
+
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(",").join(" ");
+        query = query.sort(sortBy);
+    } else {
+        query = query.sort("-createdAt");
+    }
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const data = await query;
 
     res.status(200).json({
         success: true,
