@@ -79,13 +79,35 @@ exports.sendTokenResponse = (user, statusCode, res) => {
         });
 };
 
+// @desc        Get logged in user user
+// @route       POST /api/v1/auth/me
+// @access      Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-    console.log(req.user.id);
     const user = await User.findById(req.user.id);
 
     if (!user) {
         next(new ErrorResponse(`Cannot find user id ${req.user.id}`, 404));
     }
+
+    res.status(200).json({
+        success: true,
+        data: user
+    });
+});
+
+// @desc        Forget password
+// @route       POST /api/v1/auth/me
+// @access      Public
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+        next(new ErrorResponse(`Cannot find user ${req.body.email}`, 404));
+    }
+
+    const resetToken = user.getResetPasswordToken();
+
+    console.log(resetToken);
 
     res.status(200).json({
         success: true,
