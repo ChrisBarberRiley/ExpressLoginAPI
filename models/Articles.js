@@ -8,12 +8,7 @@ const ArticlesSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
-    slug: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
-    },
+    slug: String,
     body: {
         type: String,
         required: true,
@@ -22,11 +17,17 @@ const ArticlesSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        required: true
     }
 });
 
 ArticlesSchema.pre("save", function() {
-    this.slug = slugify(this.name, { lower: true });
+    console.log("Slugify ran" + this.title);
+    this.slug = slugify(this.title, { lower: true });
     next();
 });
 
