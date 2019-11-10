@@ -61,21 +61,21 @@ exports.updateArticle = asyncHandler(async (req, res, next) => {
             )
         );
     }
-    console.log(article.user);
-    // TODO: check if user has correct permissions
+    console.log(`User id: ${article.user}`.yellow.inverse);
+    // check if user has correct permissions
     if (article.user.toString() !== req.user.id && req.user.role !== "admin") {
         next(
             new ErrorResponse(`You are not authorised to make this action`, 401)
         );
     }
 
-    // TODO: Update article
+    // Update article
     article = await Articles.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
     });
 
-    // TODO: Send response
+    // Send response
     res.status(200).json({
         success: true,
         data: article
@@ -83,7 +83,6 @@ exports.updateArticle = asyncHandler(async (req, res, next) => {
 });
 
 // Delete article
-
 exports.removeArticle = asyncHandler(async (req, res, next) => {
     let article = await Articles.findById(req.params.id);
 
@@ -97,10 +96,10 @@ exports.removeArticle = asyncHandler(async (req, res, next) => {
         );
     }
 
-    // TODO: Update article
+    // Delete article
     await article.remove();
 
-    // TODO: Send response
+    // Send response
     res.status(200).json({
         success: true
     });
