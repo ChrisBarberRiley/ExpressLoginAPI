@@ -1,5 +1,6 @@
 const ErrorResponse = require("../utils/errorResponse");
 const User = require("../models/User");
+const asyncHandler = require("../middleware/async");
 
 // @desc        Register a new user
 // @route       POST /api/v1/auth/register
@@ -56,7 +57,7 @@ exports.login = async (req, res, next) => {
 };
 
 // Get token from model, create cookie, send response
-const sendTokenResponse = (user, statusCode, res) => {
+exports.sendTokenResponse = (user, statusCode, res) => {
     const token = user.getSignedJwtToken();
 
     const options = {
@@ -77,3 +78,17 @@ const sendTokenResponse = (user, statusCode, res) => {
             token
         });
 };
+
+exports.getMe = asyncHandler(async (req, res, next) => {
+    console.log(req.user.id);
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        next(new ErrorResponse(`Cannot find user id ${req.user.id}`, 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        data: user
+    });
+});
